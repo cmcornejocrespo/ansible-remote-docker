@@ -1,4 +1,8 @@
 ---
+- name: install phyton-simplejson
+  command: apt install -y python-simplejson
+  ignore_errors: true
+
 - name: update Ubuntu
   command: apt-get update
   ignore_errors: true
@@ -47,18 +51,19 @@
   command: service docker start
   ignore_errors: true
 
-- name: reboot system
-  command: reboot
-
-- name: waiting for system to reboot
-  local_action:
-      module: wait_for
-        port=22
-        host={{ansible_ssh_host}}
-        state=started
-        delay=45
-        timeout=300
-  become: false
+# COMENTADO ESTOS DOS TASK PORQUE DA ERROR DESDE ANSIBLE
+#- name: reboot system
+#  command: reboot
+#
+#- name: waiting for system to reboot
+#  local_action:
+#      module: wait_for
+#        port=22
+#        host={{ansible_ssh_host}}
+#        state=started
+#        delay=45
+#        timeout=300
+#  become: false
 
 - name: Install dependencies
   apt:
@@ -66,12 +71,10 @@
       update_cache=yes
 
 - name: add user to docker group
-  user: name=ec2-user groups=docker append=yes
-  notify:
-    - Kill all ssh connections}
+  user: name=ubuntu groups=docker append=yes
 
 - name: docker-compose install
-  command: curl -L https://github.com/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+  shell: curl -L https://github.com/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
   ignore_errors: truegit
 
 - name: docker-compose xhmod
