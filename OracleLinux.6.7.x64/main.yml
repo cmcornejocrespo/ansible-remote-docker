@@ -1,4 +1,4 @@
-- hosts: ubuntu-aws
+- hosts: oracleLinux6-aws
   gather_facts: True
   become: True
 
