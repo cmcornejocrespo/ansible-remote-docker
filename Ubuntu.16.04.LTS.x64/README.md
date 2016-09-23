@@ -1,5 +1,5 @@
-# kubernetes-aws-ansible
-Ansible playbook that installs in ubuntu (aws) kubernetes
+# Ubuntu.16.04.LTS.x64
+Ansible playbook that installs in Ubuntu 16.04
 
 # Requisitos de configuraccion para la conexion de Ansible a un servidor
 Tener el certificado .pem del servidor en nuestro local y ejecutarle un chmod 400 sobre el, para que ansible pueda leerlo
