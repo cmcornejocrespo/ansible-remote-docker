@@ -1,0 +1,80 @@
+---
+- name: update Ubuntu
+  command: apt-get update
+  ignore_errors: true
+
+- name: Install ca-certificates
+  command: apt-get install apt-transport-https ca-certificates
+  ignore_errors: true
+
+- name: update Ubuntu
+  command: apt-get update
+  ignore_errors: true
+
+- name: Adds docker gpg key
+  apt_key: keyserver=hkp://p80.pool.sks-keyservers.net:80 id=58118E89F3A912897C070ADBF76221572C52609D
+  ignore_errors: true
+
+- name: add docker repository
+  shell: echo deb https://apt.dockerproject.org/repo ubuntu-xenial main > /etc/apt/sources.list.d/docker.list
+  ignore_errors: true
+
+- name: update Ubuntu
+  command: apt-get update
+  ignore_errors: true
+
+- name: purges old docker repos
+  command: apt-get purge lxc-docker*
+  ignore_errors: true
+
+- name: update Ubuntu
+  command: apt-get update
+  ignore_errors: true
+
+- name: Linux image extra virtual
+  command: apt-get install linux-image-extra-$(uname -r) linux-image-extra-virtual
+  ignore_errors: true
+
+- name: Install docker engine
+  command: apt-get install docker-engine
+  ignore_errors: true
+
+- name: update Ubuntu
+  command: apt-get update
+  ignore_errors: true
+
+- name: start Service
+  command: service docker start
+  ignore_errors: true
+
+- name: reboot system
+  command: reboot
+
+- name: waiting for system to reboot
+  local_action:
+      module: wait_for
+        port=22
+        host={{ansible_ssh_host}}
+        state=started
+        delay=45
+        timeout=300
+  become: false
+
+- name: Install dependencies
+  apt:
+      name=docker-engine
+      update_cache=yes
+
+- name: add user to docker group
+  user: name=ec2-user groups=docker append=yes
+  notify:
+    - Kill all ssh connections}
+
+- name: docker-compose install
+  command: curl -L https://github.com/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+  ignore_errors: truegit
+
+- name: docker-compose xhmod
+  command: chmod +x /usr/local/bin/docker-compose
+  ignore_errors: true
+
