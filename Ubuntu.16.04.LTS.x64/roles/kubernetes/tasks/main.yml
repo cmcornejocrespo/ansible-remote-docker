@@ -1,0 +1,4 @@
+---
+- name: Creates kubernetes directory
+  file: path=/home/{{ user }}/kubernetes state=directory mode=0777
+  become: False
