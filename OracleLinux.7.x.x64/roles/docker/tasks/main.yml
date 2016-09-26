@@ -1,0 +1,39 @@
+---
+- name: Add the yum repo yourself For version 7
+  ignore_errors: true
+  yum_repository:
+    name: dockerrepo
+    description: Docker Repository
+    file: external_repos
+    baseurl: https://yum.dockerproject.org/repo/main/oraclelinux/7
+    gpgkey: https://yum.dockerproject.org/gpg
+    gpgcheck: yes
+    enabled: yes
+
+- name: yum update
+  yum: name=* disablerepo=* enablerepo=dockerrepo state=latest
+  ignore_errors: true
+
+- name: install docker-engine
+  yum: name=docker-engine state=latest
+  ignore_errors: true
+
+- service: name=docker state=started
+
+- name: Add Docker group
+  command: groupadd docker
+  ignore_errors: true
+
+- name: Add USER ec2-user to Docker group
+  command: usermod -aG docker $USER
+  ignore_errors: true
+
+- name: Check Docker
+  command: chkconfig docker on
+  ignore_errors: true
+
+- name: Ensure docker-compose is installed and available
+  get_url:
+      url : https://github.com/docker/compose/releases/download/1.8.0/docker-compose-{{ ansible_system }}-{{ ansible_userspace_architecture }}
+      dest: /usr/local/bin/docker-compose
+      mode: 'u+x,g+x'
