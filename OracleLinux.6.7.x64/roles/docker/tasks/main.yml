@@ -37,9 +37,9 @@
   ignore_errors: true
 
 - name: Docker Compose Install
-  shell: curl -L https://github.com/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-  ignore_errors: true
+  get_url:
+   url: https://github.com/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m`
+   dest: /usr/local/bin/docker-compose
 
 - name: Docker Compose chmod
-  command: chmod +x /usr/local/bin/docker-compose
-  ignore_errors: true
+  file: path=/usr/local/bin/docker-compose mode="u+x"

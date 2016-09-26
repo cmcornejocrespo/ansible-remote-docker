@@ -73,11 +73,11 @@
 - name: add user to docker group
   user: name=ubuntu groups=docker append=yes
 
-- name: docker-compose install
-  shell: curl -L https://github.com/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-  ignore_errors: truegit
+- name: Docker Compose Install
+  get_url:
+   url: https://github.com/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m`
+   dest: /usr/local/bin/docker-compose
 
-- name: docker-compose xhmod
-  command: chmod +x /usr/local/bin/docker-compose
-  ignore_errors: true
+- name: Docker Compose chmod
+  file: path=/usr/local/bin/docker-compose mode="u+x"
 
