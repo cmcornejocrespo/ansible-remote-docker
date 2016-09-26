@@ -3,10 +3,43 @@
   yum: name=* state=latest
   ignore_errors: true
 
-#- name: Add the yum repo yourself For version 6
-#  command: tee /etc/yum.repos.d/docker.repo <<-EOF	[dockerrepo]	name=Docker Repository	baseurl=https://yum.dockerproject.org/repo/main/oraclelinux/6	enabled=1	gpgcheck=1	gpgkey=https://yum.dockerproject.org/gpg	EOF
-#  ignore_errors: true
+- name: Add the yum repo yourself For version 6
+  ignore_errors: true
+  yum_repository:
+    name: dockerrepo
+    description: Docker Repository
+    file: external_repos
+    baseurl: https://yum.dockerproject.org/repo/main/oraclelinux/6
+    gpgkey: https://yum.dockerproject.org/gpg
+    gpgcheck: yes
+    enabled: yes
+
+- name: yum update
+  yum: name=* state=latest
+  ignore_errors: true
 
 - name: install docker-engine
   yum: name=docker-engine state=latest
+  ignore_errors: true
+
+- service: name=docker state=started
+
+- name: Add Docker group
+  command: groupadd docker
+  ignore_errors: true
+
+- name: Add USER ec2-user to Docker group
+  command: usermod -aG docker ec2-user
+  ignore_errors: true
+
+- name: Check Docker
+  command: chkconfig docker on
+  ignore_errors: true
+
+- name: Docker Compose Install
+  shell: curl -L https://github.com/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+  ignore_errors: true
+
+- name: Docker Compose chmod
+  command: chmod +x /usr/local/bin/docker-compose
   ignore_errors: true
