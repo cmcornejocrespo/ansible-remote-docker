@@ -1,8 +1,4 @@
 ---
-- name: yum update
-  yum: name=* state=latest
-  ignore_errors: true
-
 - name: Add the yum repo yourself For version 6
   ignore_errors: true
   yum_repository:
@@ -15,7 +11,7 @@
     enabled: yes
 
 - name: yum update
-  yum: name=* state=latest
+  yum: name=* disablerepo=* enablerepo=dockerrepo state=latest
   ignore_errors: true
 
 - name: install docker-engine
@@ -29,17 +25,15 @@
   ignore_errors: true
 
 - name: Add USER ec2-user to Docker group
-  command: usermod -aG docker ec2-user
+  command: usermod -aG docker $USER
   ignore_errors: true
 
 - name: Check Docker
   command: chkconfig docker on
   ignore_errors: true
 
-- name: Docker Compose Install
+- name: Ensure docker-compose is installed and available
   get_url:
-   url: https://github.com/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m`
-   dest: /usr/local/bin/docker-compose
-
-- name: Docker Compose chmod
-  file: path=/usr/local/bin/docker-compose mode="u+x"
+      url : https://github.com/docker/compose/releases/download/1.8.0/docker-compose-{{ ansible_system }}-{{ ansible_userspace_architecture }}
+      dest: /usr/local/bin/docker-compose
+      mode: 'u+x,g+x'
