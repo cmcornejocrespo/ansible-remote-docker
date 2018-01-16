@@ -1,6 +1,0 @@
-- hosts: ubuntu-aws
-  gather_facts: True
-  become: True
-
-  roles:
-     - { role: docker }
